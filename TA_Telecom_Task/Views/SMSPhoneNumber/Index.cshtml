@@ -1,0 +1,110 @@
+﻿@model TA_Telecom_Task.BL.ViewModels.SMSPhoneNumberDTO
+@{
+    ViewBag.Title = "Send SMS";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="padding-top: 30px">
+
+    <div class="panel panel-primary">
+
+        <div class="panel-body" style="padding-top: 30px">
+
+            @using (Html.BeginForm("Index", "SMSPhoneNumber", FormMethod.Post, new { @class = "form-horizontal form-label-left", enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div style="height:400px;overflow-y:scroll">
+                        <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th> </th>
+                                    <th> PhoneNumber </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int counter = 0;
+                                    foreach (var item in ViewBag.PhoneNumber)
+                                    {
+                                        counter++;
+                                        <tr class="odd gradeX">
+                                            <td>@counter</td>
+                                            <td><input type="checkbox" name="Id" value="@item.Id" /></td>
+                                            <td>@item.PhoneNum</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <br />
+                    <div class="form-group">
+                        <label class="col-md-6 control-label">
+                            Count of Selected Numbers:
+                        </label>
+                        <div class="col-md-2">
+                            <input id="count" value="0" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">
+                            SMS Message <span style="color:red" class="required">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            @Html.TextAreaFor(model => model.Message, new
+                            {
+                                cols = 60,
+                                @rows = 5,
+                                htmlAttributes = new
+                                {
+                                    @class = "form-control",
+                                    @required = "required",
+                                    @oninvalid = "this.setCustomValidity('Please enter sms message')",
+                                    @oninput = "setCustomValidity('')"
+                                }
+                            })
+                            @Html.ValidationMessageFor(model => model.Message, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-7 col-md-5">
+                            <button type="submit" id="save" class="btn btn-outline btn-primary"> Send </button>
+                            <a href="/Home/Index" class="btn btn-outline btn-danger"> Cancel </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var countInput = document.getElementById('count');
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].onchange = countCheckboxes;
+    }
+
+    function countCheckboxes() {
+        var count = 0;
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked)
+                count++;
+        }
+        countInput.value = count;
+    }
+    countCheckboxes();
+</script>
